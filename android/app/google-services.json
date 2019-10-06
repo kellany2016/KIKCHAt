@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "537850997920",
+    "firebase_url": "https://kikchat-e9210.firebaseio.com",
+    "project_id": "kikchat-e9210",
+    "storage_bucket": "kikchat-e9210.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537850997920:android:461201404d010a49c6adc5",
+        "android_client_info": {
+          "package_name": "com.ahmedalaa.taskapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "537850997920-v7skbhpqt11d9gg2ttcpj3dpo3l2afbp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUrymjM-ECo9rFQbKbRv5ffGC6AVEdRWM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "537850997920-v7skbhpqt11d9gg2ttcpj3dpo3l2afbp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537850997920:android:2d4c7d308d3f72eac6adc5",
+        "android_client_info": {
+          "package_name": "com.example.kik_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "537850997920-v7skbhpqt11d9gg2ttcpj3dpo3l2afbp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUrymjM-ECo9rFQbKbRv5ffGC6AVEdRWM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "537850997920-v7skbhpqt11d9gg2ttcpj3dpo3l2afbp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
