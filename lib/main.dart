@@ -17,7 +17,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       darkTheme: ThemeData.dark(),
       title: 'KIK',
-      initialRoute: '/',
+      initialRoute: '/second',
       routes: {
         '/': (context)=> LoginScreen(),
         '/first': (context)=> FriendsList(),
