@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kik_chat/auth.dart';
 import 'package:kik_chat/screens/friendsList.dart';
-import 'package:kik_chat/screens/Photographia.dart';
 
 class LoginScreen extends StatefulWidget {
   final BaseAuth auth = new Auth();
@@ -112,16 +111,15 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     else {
       return [
-        Row(
-          children: <Widget>[
-            FlatButton(
-              onPressed: ()=>  Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Photographia())),
-              child: Icon(Icons.camera),
-
-            ),
-          ],
-        ),
+//        Row(
+//          children: <Widget>[
+//            FlatButton(
+//              child: Icon(Icons.camera),
+//              onPressed: ()=>  Navigator.push(
+//                  context, MaterialPageRoute(builder: (context) => Photographia())),
+//            ),
+//          ],
+//        ),
         TextFormField(
           keyboardType: TextInputType.emailAddress,
           onSaved: (value) => email = value,
