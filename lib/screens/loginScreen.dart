@@ -8,18 +8,12 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-
-
-enum FormType {
-  signIn,
-  signUp
-}
+enum FormType { signIn, signUp }
 
 class _LoginScreenState extends State<LoginScreen> {
   String email, password;
   FormType _formType = FormType.signIn;
   final _formKey = GlobalKey<FormState>();
-
 
   bool validation() {
     final form = _formKey.currentState;
@@ -34,12 +28,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (validation()) {
       try {
         if (_formType == FormType.signIn) {
-          var user =  await widget.auth.signInWithEmailAndPassword(email, password);
+          var user =
+              await widget.auth.signInWithEmailAndPassword(email, password);
           print('L : {$user.uid}');
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => FriendsList()));
         } else {
-          var user =   await widget.auth.createUserWithEmailAndPassword(email, password);
+          var user =
+              await widget.auth.createUserWithEmailAndPassword(email, password);
           print('R: {$user.uid}');
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => FriendsList()));
@@ -66,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _formType = FormType.signIn;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -80,8 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: emailAndPasswordField() + logInAndRegister(),
-                )
-            ),
+                )),
           ),
         ),
       ),
@@ -102,14 +98,11 @@ class _LoginScreenState extends State<LoginScreen> {
         TextFormField(
           obscureText: true,
           onSaved: (value) => password = value,
-          decoration: InputDecoration(
-              labelText: 'Password',
-              hintText: 'Password'
-          ),
+          decoration:
+              InputDecoration(labelText: 'Password', hintText: 'Password'),
         )
       ];
-    }
-    else {
+    } else {
       return [
 //        Row(
 //          children: <Widget>[
@@ -124,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
           keyboardType: TextInputType.emailAddress,
           onSaved: (value) => email = value,
           validator: (value) =>
-          value.isEmpty ? 'Email address can\`t be empty' : null,
+              value.isEmpty ? 'Email address can\`t be empty' : null,
           decoration: InputDecoration(
             labelText: 'Email Address',
             hintText: 'Enter a valid mail, like: jax@jungle.com',
@@ -134,45 +127,36 @@ class _LoginScreenState extends State<LoginScreen> {
           obscureText: true,
           onSaved: (value) => password = value,
           validator: (value) =>
-          value.isEmpty ? 'Password can\`t be empty' : null,
+              value.isEmpty ? 'Password can\`t be empty' : null,
           decoration: InputDecoration(
-              labelText: 'Password',
-              hintText: 'Enter 6 chars at least'
-          ),
+              labelText: 'Password', hintText: 'Enter 6 chars at least'),
         )
       ];
     }
   }
 
+  //formatted
   List<Widget> logInAndRegister() {
+    String sign;
+    String subText;
+    if (_formType == FormType.signIn) {
+      sign = 'sign in';
+      subText = 'Register';
+    } else {
+      sign = 'sign up';
+      subText = 'have account ? sign in';
+    }
 
-      if(_formType == FormType.signIn){
-        return[
-          RaisedButton(
-            elevation: 5.0,
-            child: Text('sign in'),
-            onPressed: ()=> validateAndSubmit(),
-          ),
-          FlatButton(
-            onPressed:()=> moveToSignup() ,
-            child: Text('Register'),
-          )
-        ];
-      }
-      else {
-          return[
-            RaisedButton(
-              elevation: 5.0,
-              child: Text('sign up'),
-              onPressed: ()=> validateAndSubmit(),
-            ),
-            FlatButton(
-              onPressed:()=> moveToLogin() ,
-              child: Text('have account ? sign in'),
-            )
-          ];
-        }
-
+    return [
+      RaisedButton(
+        elevation: 5.0,
+        child: Text(sign),
+        onPressed: () => validateAndSubmit(),
+      ),
+      FlatButton(
+        onPressed: () => moveToSignup(),
+        child: Text(subText),
+      )
+    ];
   }
-
 }
