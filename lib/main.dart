@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'screens/loginScreen.dart';
+
 import 'screens/chatScreen.dart';
 import 'screens/friendsList.dart';
-
+import 'screens/loginScreen.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,11 +17,11 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       darkTheme: ThemeData.dark(),
       title: 'KIK',
-      initialRoute: '/',
+      initialRoute: '/chat',
       routes: {
-        '/': (context)=> LoginScreen(),
-        '/first': (context)=> FriendsList(),
-        '/second': (context)=> ChatScreen()
+        '/': (context) => LoginScreen(),
+        '/friends': (context) => FriendsList(),
+        '/chat': (context) => ChatScreen()
       },
     );
   }
