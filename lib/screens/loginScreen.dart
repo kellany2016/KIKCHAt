@@ -6,6 +6,7 @@ import 'package:kik_chat/screens/Photographia.dart';
 
 class LoginScreen extends StatefulWidget {
   final BaseAuth auth = new Auth();
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -72,11 +73,11 @@ class _LoginScreenState extends State<LoginScreen> {
       home: Scaffold(
         body: SafeArea(
           child: Container(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(30.0),
             child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: emailAndPasswordField() + logInAndRegister(),
                 )),
@@ -108,11 +109,24 @@ class _LoginScreenState extends State<LoginScreen> {
       return [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton(
-              child: Icon(Icons.camera),
-              onPressed: ()=>  Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Photographia())),
+            Column(
+              children: <Widget>[
+                FlatButton(
+                  child: Image.asset(
+                    'assets/images/add_photo.png',
+                    width: 120.0,
+                    height: 120.0,
+                  ),
+                  onPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Photographia())),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('add your photo'),
+                ),
+              ],
             ),
           ],
         ),
@@ -133,7 +147,17 @@ class _LoginScreenState extends State<LoginScreen> {
               value.isEmpty ? 'Password can\`t be empty' : null,
           decoration: InputDecoration(
               labelText: 'Password', hintText: 'Enter 6 chars at least'),
-        )
+        ),
+        TextFormField(
+          keyboardType: TextInputType.phone,
+         // onSaved: (value) => email = value,
+          validator: (value) =>
+          value.isEmpty ? 'phone number can\`t be empty': null,
+          decoration: InputDecoration(
+            labelText: 'Phone Number',
+            hintText: 'Enter your phone number',
+          ),
+        ),
       ];
     }
   }
