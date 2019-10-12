@@ -11,10 +11,14 @@ class FriendInfo {
 
   String name;
   String pfp; // aka profile picture
-  String username; //TODO make it final and initialize it
+  String username;
+  String phone;
+  DateTime birthday;
+  String gender;
+  //TODO make it final and initialize it
 }
 //to be used in ChatRoom
-class RoomData {
+class RoomData{
 
   List<FriendInfo> friends; // one or more user to chat with
   String chatPFP; // if in a group chat

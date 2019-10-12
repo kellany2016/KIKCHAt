@@ -5,22 +5,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
-import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'loginScreen.dart';
 
 class Photographia extends StatefulWidget {
   @override
   _PhotographiaState createState() => _PhotographiaState();
   bool imageUploadStatus = false;
-  int _random = Random().nextInt(100000);
   int idIncremental = 0;
-  int getRandom()
-  {
-    return _random;
-  }
-
-  void setRandom(int imageId){
-    _random = imageId;
-  }
 
   void setImageUploadedStatus(bool status)
   {
@@ -44,6 +36,7 @@ class _PhotographiaState extends State<Photographia> {
 
   Future getImageFromCam() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
     setState(() {
       _imageFile = image;
     });
@@ -66,6 +59,9 @@ class _PhotographiaState extends State<Photographia> {
 //      final StorageUploadTask task =
 //      firebaseStorageRef.putFile(file);
 //  }
+  void saveImage(){
+
+  }
   @override
   Widget build(BuildContext context) {
     int imageId;
@@ -114,19 +110,18 @@ class _PhotographiaState extends State<Photographia> {
                 RaisedButton(
                   elevation: 6.0,
                   color: Colors.lightBlue,
-                  child: Text('Upload My Photo'),
-                  onPressed: () {
+                  child: Text('save',style: TextStyle(fontSize: 25.0),),
+                  onPressed: ()async {
                       if(_imageFile !=null)
                         {
-                          bool status = true;
-                          widget.setImageUploadedStatus(status);
-                          imageId = Random().nextInt(1000000);
-                          widget.setRandom(imageId);
-                          final StorageReference firebaseStorageRef =
-                          FirebaseStorage.instance.ref().child('${widget.idIncremental.toString()}.jpg');
-                          widget.idIncremental++;
-                          final StorageUploadTask task =
-                          firebaseStorageRef.putFile(_imageFile);
+                          ImageGetter.SetImage(_imageFile);
+                         // Navigator.popAndPushNamed(context,'/');
+//                          //TODO handle the repetition..
+//                          final StorageReference firebaseStorageRef =
+//                          FirebaseStorage.instance.ref().child('${widget.idIncremental.toString()}.jpg');
+//                          widget.idIncremental++;
+//                          final StorageUploadTask task =
+//                          firebaseStorageRef.putFile(_imageFile);
                         }
                   },
                 ),
@@ -152,4 +147,17 @@ class _PhotographiaState extends State<Photographia> {
       _imageFile = null;
     });
   }
+}
+class ImageGetter{
+  static File img=new File('..');
+  static ImageStatus imageStatus=ImageStatus.notAdded;
+
+static SetImage(File myimg){
+  img=myimg;
+  imageStatus=ImageStatus.added;
+}
+
+
+ static File getImage(){return img;}
+static  ImageStatus getImageStatus(){return imageStatus;}
 }

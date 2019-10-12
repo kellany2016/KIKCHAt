@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kik_chat/auth.dart';
 import 'package:kik_chat/screens/friendsList.dart';
 import 'package:kik_chat/screens/Photographia.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginScreen extends StatefulWidget {
   final BaseAuth auth;
   final VoidCallback signedIn;
+
+
 
   LoginScreen({this.auth, this.signedIn});
 
@@ -15,17 +20,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 enum FormType { signIn, signUp }
+enum ImageStatus {added, notAdded}
 
 class _LoginScreenState extends State<LoginScreen> {
   String email, password;
   FormType _formType = FormType.signIn;
   final _formKey = GlobalKey<FormState>();
-
-  // Photographia _photographia;
+  ImageStatus imageStatus = ImageStatus.notAdded;
 
   bool validation() {
     final form = _formKey.currentState;
-    if (form.validate()) {
+    if (form.validate()){
       form.save();
       return true;
     } else
@@ -92,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   List<Widget> emailAndPasswordField() {
+
     if (_formType == FormType.signIn) {
       return [
         TextFormField(
@@ -163,14 +169,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget add_photo() {
-    bool imageStatus = Photographia().getImageUploadStatus();
-    if (imageStatus == false) {
-      return Image.asset(
-        'assets/images/add_photo.png',
-        width: 120.0,
-        height: 120.0,
-      );
-    }
+      if(ImageGetter.getImageStatus()==ImageStatus.notAdded)
+        {
+          return Image.asset('assets/images/add_photo.png',height: 200.0,width: 200.0,);
+        }else if(ImageGetter.getImageStatus()==ImageStatus.added){
+          return Image.file(ImageGetter.getImage(),height: 200.0,width: 200.0,);
+      }
   }
 
   //formatted
