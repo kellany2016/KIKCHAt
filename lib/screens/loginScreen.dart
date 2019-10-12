@@ -5,7 +5,10 @@ import 'package:kik_chat/screens/friendsList.dart';
 import 'package:kik_chat/screens/Photographia.dart';
 
 class LoginScreen extends StatefulWidget {
-  final BaseAuth auth = new Auth();
+  final BaseAuth auth;
+  final VoidCallback signedIn;
+
+  LoginScreen({this.auth, this.signedIn});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -17,8 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String email, password;
   FormType _formType = FormType.signIn;
   final _formKey = GlobalKey<FormState>();
-  Photographia _photographia;
 
+  // Photographia _photographia;
 
   bool validation() {
     final form = _formKey.currentState;
@@ -35,17 +38,15 @@ class _LoginScreenState extends State<LoginScreen> {
         if (_formType == FormType.signIn) {
           var user =
               await widget.auth.signInWithEmailAndPassword(email, password);
-          print('L : {$user.uid}');
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => FriendsList()));
         } else {
           var user =
               await widget.auth.createUserWithEmailAndPassword(email, password);
-          print('R: {$user.uid}');
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => FriendsList()));
         }
-        //  widget.signedIn();
+        widget.signedIn();
       } catch (e) {
         print(e);
       }
@@ -161,27 +162,17 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Widget add_photo(){
+  Widget add_photo() {
     bool imageStatus = Photographia().getImageUploadStatus();
-    if(imageStatus==false) {
+    if (imageStatus == false) {
       return Image.asset(
         'assets/images/add_photo.png',
         width: 120.0,
         height: 120.0,
       );
     }
-    else {
-      return Image.network(
-          'https://firebasestorage.googleapis.com/v0/b/kikchat-e9210.appspot.com/o/'
-              '${_photographia.getRandom()}.jpg?alt=media&token=5440984f-66a0-498b-8b6a-b49ac6ec2fd4');}
-
-//    return Image.network(
-//      'https://firebasestorage.googleapis.com/v0/b/kikchat-e9210.appspot.com/o/163618.jpg?alt=media&token=bae63534-1d36-42cd-b388-cf81295e38d1',height: 120.0,width: 120,
-//    );
-
-
-
   }
+
   //formatted
   List<Widget> logInAndRegister() {
     String sign;

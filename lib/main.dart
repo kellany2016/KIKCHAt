@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:kik_chat/screens/root_page.dart';
+import 'auth.dart';
 import 'screens/chatScreen.dart';
 import 'screens/friendsList.dart';
 import 'screens/loginScreen.dart';
@@ -17,8 +18,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       darkTheme: ThemeData.dark(),
       title: 'KIK',
-      initialRoute: '/',
+      initialRoute: '//',
       routes: {
+        '//':(context) => RootPage(auth: new Auth()),
         '/': (context) => LoginScreen(),
         '/friends': (context) => FriendsList(),
         '/chat': (context) => ChatScreen()

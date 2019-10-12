@@ -12,7 +12,7 @@ class Photographia extends StatefulWidget {
   _PhotographiaState createState() => _PhotographiaState();
   bool imageUploadStatus = false;
   int _random = Random().nextInt(100000);
-
+  int idIncremental = 0;
   int getRandom()
   {
     return _random;
@@ -123,7 +123,8 @@ class _PhotographiaState extends State<Photographia> {
                           imageId = Random().nextInt(1000000);
                           widget.setRandom(imageId);
                           final StorageReference firebaseStorageRef =
-                          FirebaseStorage.instance.ref().child('$imageId.jpg');
+                          FirebaseStorage.instance.ref().child('${widget.idIncremental.toString()}.jpg');
+                          widget.idIncremental++;
                           final StorageUploadTask task =
                           firebaseStorageRef.putFile(_imageFile);
                         }

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:kik_chat/auth.dart';
+import 'root_page.dart';
 
 class FriendsList extends StatefulWidget {
+  final BaseAuth auth;
+  final VoidCallback signedOut;
+  FriendsList({this.auth,this.signedOut});
   @override
   _FriendsListState createState() => _FriendsListState();
 }
 
 class _FriendsListState extends State<FriendsList> {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -84,8 +90,15 @@ class _FriendsListState extends State<FriendsList> {
     //search user names in the list..
     return null;
   }
+  //handle sign out and go back to root page, root page should go to login screen..
+  void _signOut()async{
+    try{
+      await widget.auth.signOut();
+      widget.signedOut();
+      Navigator.push(
+          context , MaterialPageRoute(builder: (context) => RootPage(auth: widget.auth)));
+    }
+    catch(e){print(e);}
+  }
 }
-//         Image.asset('assets/images/ic_launcher.png',height: 30.0,width: 30.0,), //friend image url ..
-//         Text('friend name'),
-//          Text('last message'),
-//          Text('the time of last msg sent'),
+
