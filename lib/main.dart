@@ -17,11 +17,12 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       darkTheme: ThemeData.dark(),
       title: 'KIK',
-      initialRoute: '/chat',
+      initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),
         '/friends': (context) => FriendsList(),
         '/chat': (context) => ChatScreen()
+        //TODO use named routes in the rest of files..
       },
     );
   }

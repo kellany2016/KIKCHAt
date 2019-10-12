@@ -78,7 +78,3 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-
-myshit() {
-  TextField();
-}

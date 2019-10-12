@@ -80,7 +80,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: emailAndPasswordField() + logInAndRegister(),
-                )),
+                ),
+            ),
           ),
         ),
       ),
@@ -181,7 +182,10 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: () => validateAndSubmit(),
       ),
       FlatButton(
-        onPressed: () => moveToSignup(),
+        onPressed: (){
+          if(_formType == FormType.signIn) moveToSignup();
+          else moveToLogin();
+        },
         child: Text(subText),
       )
     ];
