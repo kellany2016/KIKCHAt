@@ -5,11 +5,31 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
-import 'package:kik_chat/screens/loginScreen.dart';
+import 'dart:math';
 
 class Photographia extends StatefulWidget {
   @override
   _PhotographiaState createState() => _PhotographiaState();
+  bool imageUploadStatus = false;
+  int _random = Random().nextInt(100000);
+
+  int getRandom()
+  {
+    return _random;
+  }
+
+  void setRandom(int imageId){
+    _random = imageId;
+  }
+
+  void setImageUploadedStatus(bool status)
+  {
+    imageUploadStatus = status;
+  }
+  bool getImageUploadStatus()
+  {
+    return imageUploadStatus;
+  }
 }
 
 class _PhotographiaState extends State<Photographia> {
@@ -29,9 +49,26 @@ class _PhotographiaState extends State<Photographia> {
     });
   }
 
+//  Future<Null> uploadImage(String path) async
+//  {
+//    //send and recieve the image url..
+//      final ByteData bytes = await rootBundle.load(path);
+//      final Directory directoryTmp = Directory.systemTemp;
+//      final String fileName = '${Random().nextInt(100000)}.jpg';
+//      final File file = File('${directoryTmp.path}/$fileName');
+//      file.writeAsBytes(bytes.buffer.asInt8List(),mode: FileMode.write);
+//
+//
+//
+//      //upload code lines...
+//      final StorageReference firebaseStorageRef =
+//      FirebaseStorage.instance.ref().child(fileName);
+//      final StorageUploadTask task =
+//      firebaseStorageRef.putFile(file);
+//  }
   @override
   Widget build(BuildContext context) {
-    String falseText= '';
+    int imageId;
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('Upload your photo')),
@@ -79,14 +116,17 @@ class _PhotographiaState extends State<Photographia> {
                   color: Colors.lightBlue,
                   child: Text('Upload My Photo'),
                   onPressed: () {
-                    if (_imageFile != null) {
-                      final StorageReference firebaseStorageRef =
-                          FirebaseStorage.instance.ref().child('myimage.jpg');
-
-                      final StorageUploadTask task =
+                      if(_imageFile !=null)
+                        {
+                          bool status = true;
+                          widget.setImageUploadedStatus(status);
+                          imageId = Random().nextInt(1000000);
+                          widget.setRandom(imageId);
+                          final StorageReference firebaseStorageRef =
+                          FirebaseStorage.instance.ref().child('$imageId.jpg');
+                          final StorageUploadTask task =
                           firebaseStorageRef.putFile(_imageFile);
-                      //TODO when the upload operation done, the user should go back to the sign up not the sign in...
-                    } else falseText = 'No Image selected!';
+                        }
                   },
                 ),
               ],

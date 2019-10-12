@@ -19,7 +19,6 @@ class RoomData {
   List<FriendInfo> friends; // one or more user to chat with
   String chatPFP; // if in a group chat
   String chatName; //=friends[0].name if not groups
-
 }
 //to be used in FriendsList
 class ChatRoom {
@@ -35,7 +34,6 @@ class FriendsList {
 class User {
   FriendsList friendsList;
   FriendInfo iamThatFriendNow ;
-
 }
 //what we use to intialize our dataBase
 //TODO this deosn't belong here .. but I put it *here* just for clarification purposes

@@ -17,6 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String email, password;
   FormType _formType = FormType.signIn;
   final _formKey = GlobalKey<FormState>();
+  Photographia _photographia;
+
 
   bool validation() {
     final form = _formKey.currentState;
@@ -75,12 +77,12 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Container(
             padding: EdgeInsets.all(30.0),
             child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: emailAndPasswordField() + logInAndRegister(),
-                ),
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: emailAndPasswordField() + logInAndRegister(),
+              ),
             ),
           ),
         ),
@@ -115,11 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Column(
               children: <Widget>[
                 FlatButton(
-                  child: Image.asset(
-                    'assets/images/add_photo.png',
-                    width: 120.0,
-                    height: 120.0,
-                  ),
+                  child: add_photo(),
                   onPressed: () => Navigator.push(context,
                       MaterialPageRoute(builder: (context) => Photographia())),
                 ),
@@ -151,9 +149,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         TextFormField(
           keyboardType: TextInputType.phone,
-         // onSaved: (value) => email = value,
+          // onSaved: (value) => email = value,
           validator: (value) =>
-          value.isEmpty ? 'phone number can\`t be empty': null,
+              value.isEmpty ? 'phone number can\`t be empty' : null,
           decoration: InputDecoration(
             labelText: 'Phone Number',
             hintText: 'Enter your phone number',
@@ -163,6 +161,27 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Widget add_photo(){
+    bool imageStatus = Photographia().getImageUploadStatus();
+    if(imageStatus==false) {
+      return Image.asset(
+        'assets/images/add_photo.png',
+        width: 120.0,
+        height: 120.0,
+      );
+    }
+    else {
+      return Image.network(
+          'https://firebasestorage.googleapis.com/v0/b/kikchat-e9210.appspot.com/o/'
+              '${_photographia.getRandom()}.jpg?alt=media&token=5440984f-66a0-498b-8b6a-b49ac6ec2fd4');}
+
+//    return Image.network(
+//      'https://firebasestorage.googleapis.com/v0/b/kikchat-e9210.appspot.com/o/163618.jpg?alt=media&token=bae63534-1d36-42cd-b388-cf81295e38d1',height: 120.0,width: 120,
+//    );
+
+
+
+  }
   //formatted
   List<Widget> logInAndRegister() {
     String sign;
@@ -174,7 +193,6 @@ class _LoginScreenState extends State<LoginScreen> {
       sign = 'sign up';
       subText = 'have account ? sign in';
     }
-
     return [
       RaisedButton(
         elevation: 5.0,
@@ -182,9 +200,11 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: () => validateAndSubmit(),
       ),
       FlatButton(
-        onPressed: (){
-          if(_formType == FormType.signIn) moveToSignup();
-          else moveToLogin();
+        onPressed: () {
+          if (_formType == FormType.signIn)
+            moveToSignup();
+          else
+            moveToLogin();
         },
         child: Text(subText),
       )
