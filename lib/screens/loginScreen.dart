@@ -1,17 +1,14 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kik_chat/auth.dart';
 import 'package:kik_chat/screens/friendsList.dart';
 import 'package:kik_chat/screens/Photographia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:kik_chat/NoSql_Data/my_user data.dart';
 
 class LoginScreen extends StatefulWidget {
   final BaseAuth auth;
   final VoidCallback signedIn;
-
-
 
   LoginScreen({this.auth, this.signedIn});
 
@@ -49,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           var user =
               await widget.auth.createUserWithEmailAndPassword(email, password);
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => FriendsList()));
+              context, MaterialPageRoute(builder: (context) =>  FriendsList()));
         }
         widget.signedIn();
       } catch (e) {
