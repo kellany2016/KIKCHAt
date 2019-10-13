@@ -5,22 +5,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
-import 'dart:math';
+import 'loginScreen.dart';
+
 
 class Photographia extends StatefulWidget {
   @override
   _PhotographiaState createState() => _PhotographiaState();
   bool imageUploadStatus = false;
-  int _random = Random().nextInt(100000);
   int idIncremental = 0;
-  int getRandom()
-  {
-    return _random;
-  }
-
-  void setRandom(int imageId){
-    _random = imageId;
-  }
 
   void setImageUploadedStatus(bool status)
   {
@@ -44,6 +36,7 @@ class _PhotographiaState extends State<Photographia> {
 
   Future getImageFromCam() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
     setState(() {
       _imageFile = image;
     });
@@ -66,6 +59,9 @@ class _PhotographiaState extends State<Photographia> {
 //      final StorageUploadTask task =
 //      firebaseStorageRef.putFile(file);
 //  }
+  void saveImage(){
+
+  }
   @override
   Widget build(BuildContext context) {
     int imageId;
@@ -97,37 +93,36 @@ class _PhotographiaState extends State<Photographia> {
       body: ListView(
         children: <Widget>[
           Container(
-           // width: MediaQuery.of(context).size.width,
+            // width: MediaQuery.of(context).size.width,
             child: Column(
               children: <Widget>[
-                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _imageFile == null
-                        ? Image.asset('assets/images/alt_img.png',width: 400.0,height: 300.0,)
-                        : Image.file(
-                            _imageFile,
-                            height: 300.0,
-                            width: 400.0,
-                          ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: _imageFile == null
+                      ? Image.asset('assets/images/alt_img.png',width: 400.0,height: 300.0,)
+                      : Image.file(
+                    _imageFile,
+                    height: 300.0,
+                    width: 400.0,
                   ),
+                ),
                 //button to upload the user photo..
                 RaisedButton(
                   elevation: 6.0,
                   color: Colors.lightBlue,
-                  child: Text('Upload My Photo'),
-                  onPressed: () {
-                      if(_imageFile !=null)
-                        {
-                          bool status = true;
-                          widget.setImageUploadedStatus(status);
-                          imageId = Random().nextInt(1000000);
-                          widget.setRandom(imageId);
-                          final StorageReference firebaseStorageRef =
-                          FirebaseStorage.instance.ref().child('${widget.idIncremental.toString()}.jpg');
-                          widget.idIncremental++;
-                          final StorageUploadTask task =
-                          firebaseStorageRef.putFile(_imageFile);
-                        }
+                  child: Text('save',style: TextStyle(fontSize: 25.0),),
+                  onPressed: ()async {
+                    if(_imageFile !=null)
+                    {
+                      ImageGetter.setImage(_imageFile);
+                      // Navigator.popAndPushNamed(context,'/');
+//                          //TODO handle the repetition..
+//                          final StorageReference firebaseStorageRef =
+//                          FirebaseStorage.instance.ref().child('${widget.idIncremental.toString()}.jpg');
+//                          widget.idIncremental++;
+//                          final StorageUploadTask task =
+//                          firebaseStorageRef.putFile(_imageFile);
+                    }
                   },
                 ),
               ],
@@ -152,4 +147,15 @@ class _PhotographiaState extends State<Photographia> {
       _imageFile = null;
     });
   }
+}
+class ImageGetter{
+  static File img=new File('..');
+  static ImageStatus imageStatus=ImageStatus.notAdded;
+
+  static setImage(File myimg){
+    img=myimg;
+    imageStatus=ImageStatus.added;
+  }
+  static File getImage(){return img;}
+  static  ImageStatus getImageStatus(){return imageStatus;}
 }

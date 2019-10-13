@@ -5,15 +5,17 @@ class Welcome extends StatefulWidget {
   @override
   _WelcomeState createState() => _WelcomeState();
 }
-
+enum WelcomeStatus {welcomed, notWelcomed}
 class _WelcomeState extends State<Welcome> {
+  //TODO handle to go to the rootPage if the user already used the app..
+  WelcomeStatus welcomeStatus = WelcomeStatus.notWelcomed;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Center(
               child: Column(
@@ -44,7 +46,7 @@ class _WelcomeState extends State<Welcome> {
                 'Get started',
                 style: TextStyle(color: KmyColors[5]),
               ),
-              onPressed: () {},
+              onPressed: () {Navigator.pushNamed(context,'/starting');},
             ),
           ],
         ),
