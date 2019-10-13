@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:async';
 import 'loginScreen.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class Photographia extends StatefulWidget {
   @override
@@ -14,12 +12,11 @@ class Photographia extends StatefulWidget {
   bool imageUploadStatus = false;
   int idIncremental = 0;
 
-  void setImageUploadedStatus(bool status)
-  {
+  void setImageUploadedStatus(bool status) {
     imageUploadStatus = status;
   }
-  bool getImageUploadStatus()
-  {
+
+  bool getImageUploadStatus() {
     return imageUploadStatus;
   }
 }
@@ -59,9 +56,7 @@ class _PhotographiaState extends State<Photographia> {
 //      final StorageUploadTask task =
 //      firebaseStorageRef.putFile(file);
 //  }
-  void saveImage(){
-
-  }
+  void saveImage() {}
   @override
   Widget build(BuildContext context) {
     int imageId;
@@ -99,7 +94,11 @@ class _PhotographiaState extends State<Photographia> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: _imageFile == null
-                      ? Image.asset('assets/images/alt_img.png',width: 400.0,height: 300.0,)
+                      ? Image.asset(
+                    'assets/images/alt_img.png',
+                    width: 400.0,
+                    height: 300.0,
+                  )
                       : Image.file(
                     _imageFile,
                     height: 300.0,
@@ -110,10 +109,12 @@ class _PhotographiaState extends State<Photographia> {
                 RaisedButton(
                   elevation: 6.0,
                   color: Colors.lightBlue,
-                  child: Text('save',style: TextStyle(fontSize: 25.0),),
-                  onPressed: ()async {
-                    if(_imageFile !=null)
-                    {
+                  child: Text(
+                    'save',
+                    style: TextStyle(fontSize: 25.0),
+                  ),
+                  onPressed: () async {
+                    if (_imageFile != null) {
                       ImageGetter.setImage(_imageFile);
                       // Navigator.popAndPushNamed(context,'/');
 //                          //TODO handle the repetition..
@@ -148,14 +149,21 @@ class _PhotographiaState extends State<Photographia> {
     });
   }
 }
-class ImageGetter{
-  static File img=new File('..');
-  static ImageStatus imageStatus=ImageStatus.notAdded;
 
-  static setImage(File myimg){
-    img=myimg;
-    imageStatus=ImageStatus.added;
+class ImageGetter {
+  static File img = new File('..');
+  static ImageStatus imageStatus = ImageStatus.notAdded;
+
+  static setImage(File myimg) {
+    img = myimg;
+    imageStatus = ImageStatus.added;
   }
-  static File getImage(){return img;}
-  static  ImageStatus getImageStatus(){return imageStatus;}
+
+  static File getImage() {
+    return img;
+  }
+
+  static ImageStatus getImageStatus() {
+    return imageStatus;
+  }
 }

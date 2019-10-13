@@ -86,7 +86,7 @@ class _FriendsListState extends State<FriendsList> {
     );
   }
 
-  String searchUserName(String username) {
+  String searchUserName(String username){
     //search user names in the list..
     return null;
   }
