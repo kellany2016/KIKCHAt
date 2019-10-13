@@ -6,7 +6,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'loginScreen.dart';
-
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class Photographia extends StatefulWidget {
   @override
