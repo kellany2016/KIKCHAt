@@ -11,6 +11,9 @@ class FriendInfo {
   String name;
   String pfp; // aka profile picture
   String username; //TODO N make it final and initialize it
+  String phone;
+  DateTime birthday;
+  String gender;
 }
 
 //to be used in ChatRoom
