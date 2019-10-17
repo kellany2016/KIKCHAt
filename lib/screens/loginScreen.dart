@@ -32,13 +32,15 @@ class _LoginScreenState extends State<LoginScreen> {
   FormType _formType = FormType.signIn;
   final _formKey = GlobalKey<FormState>();
   final _fireStore = Firestore.instance;
+  int userId = 0;
 
   //DB functions..
   uploadToDB() {
       _fireStore.collection('user').add({
         'username': username,
         'phone': phone,
-        'image location': ImageGetter.imageStorageLocation
+        'image location': ImageGetter.imageStorageLocation,
+        'id': userId
       });
   }
 
@@ -63,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => FriendsList()));
           uploadToDB();
+          userId++;
         }
         widget.signedIn();
       } catch (e){

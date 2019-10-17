@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kik_chat/auth.dart';
 import 'root_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:algolia/algolia.dart'; //third party lib for search..
 
 class FriendsList extends StatefulWidget {
   final BaseAuth auth;
@@ -23,7 +25,7 @@ class _FriendsListState extends State<FriendsList> {
           ),
           actions: <Widget>[
             IconButton(
-              onPressed: () => null, // search user names ..
+              onPressed: () => searchExistingUsers(), // search user names ..
               icon: Icon(Icons.search),
               iconSize: 24.0,
             )
@@ -86,10 +88,29 @@ class _FriendsListState extends State<FriendsList> {
     );
   }
 
-  String searchUserName(String username){
-    //search user names in the list..
-    return null;
-  }
+ String searchExistingUsers(){
+   String  username;
+   StreamBuilder<QuerySnapshot>(
+       stream: Firestore.instance
+           .collection('users')
+           .snapshots(),
+       builder: (context, snapshot) {
+         if (!snapshot.hasData) {
+            Center(
+             child: Text('nothing to show...'),
+           );
+            return null;
+         }
+         var friends =  snapshot.data.documents;
+         List<String> friendsList = [];//show the first chars of the searched users till the user can get his friend..
+         for(var f in friends){
+            username = f.data['username'];
+         }
+         return null;
+       },
+   );
+       return username.toString();
+ }
   //handle sign out and go back to root page, root page should go to login screen..
   void _signOut()async{
     try{
