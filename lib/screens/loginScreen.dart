@@ -1,16 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kik_chat/NoSql_Data/my_user data.dart';
 import 'package:kik_chat/auth.dart';
 import 'package:kik_chat/constants.dart';
 import 'package:kik_chat/screens/Photographia.dart';
 import 'package:kik_chat/screens/friendsList.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+//done
 //TODO add user`s data to fire base and create a class to get a list of users
 //TODO so the user can search to find friends in friends List class..
-//TODO.....
-
+//un done
+//TODO 1- prevent the user to go back from friends widget to sign up .. if the user
+//TODO pressed back , make him go to the home page of android (menu)
+//TODO 2- handle password confirmation
+//TODO 3- add user image to the form..
 class LoginScreen extends StatefulWidget {
   final BaseAuth auth;
   final VoidCallback signedIn;
@@ -29,15 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
   String email, password,confirmPassword,username,phone;
   FormType _formType = FormType.signIn;
   final _formKey = GlobalKey<FormState>();
-  FriendInfo _friendInfo;
-
-  final _firestore = Firestore.instance;
+  final _fireStore = Firestore.instance;
 
   //DB functions..
   uploadToDB() {
-   // setUserInfo();
-      _firestore.collection('user').add({
-        //'email': email, 'password': password,
+      _fireStore.collection('user').add({
         'username': username,
         'phone': phone,
         'image location': ImageGetter.imageStorageLocation
@@ -57,12 +55,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (validation()) {
       try {
         if (_formType == FormType.signIn) {
-          var user =
-              await widget.auth.signInWithEmailAndPassword(email, password);
+              await Auth().signInWithEmailAndPassword(email, password);
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => FriendsList()));
         } else {
-          var user =
               await Auth().createUserWithEmailAndPassword(email, password);
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => FriendsList()));
@@ -151,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: <Widget>[
         IconButton(
           color: KmyColors[3],
-          icon: (ImageGetter.getImageStatus() == ImageStatus.notAdded)?Icon(Icons.account_circle)
+          icon: (ImageGetter.getImageStatus() == ImageStatus.notAdded)?Icon(Icons.account_circle,)
               :Image.file(
             ImageGetter.getImage(),
             height: 200.0,
@@ -180,7 +176,9 @@ class _LoginScreenState extends State<LoginScreen> {
           obscure: true,
         ),
         CustomTextField(
-          onSaved: (value) => confirmPassword = value,
+          onSaved: (value) {
+            confirmPassword = value;
+            },
           hintText: 'Password',
           labelText: 'Confirm Password',
           obscure: true,
@@ -194,28 +192,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ],
     );
-  }
-
-  //TODO handle phone field and password confirmation
-  bool fieldsValidation(){
-    return false;
-  }
-
-  Widget addPhoto() {
-    if (ImageGetter.getImageStatus() == ImageStatus.notAdded) {
-      return Image.asset(
-        'assets/images/add_photo.png',
-        height: 50.0,
-        width: 50.0,
-      );
-    } else if (ImageGetter.getImageStatus() == ImageStatus.added) {
-      return Image.file(
-        ImageGetter.getImage(),
-        height: 200.0,
-        width: 200.0,
-      );
-    }
-    return null;
   }
 
   formButtons() {
