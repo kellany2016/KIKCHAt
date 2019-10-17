@@ -1,4 +1,5 @@
 // to be used in ChatRoom
+
 class Message {
   final String senderId; // FriendInfo.name or FriendInfo.pfp
   final String msgText;
@@ -8,12 +9,27 @@ class Message {
 
 //to be used in RoomData
 class FriendInfo {
-  String name;
-  String pfp; // aka profile picture
-  String username; //TODO N make it final and initialize it
-  String phone;
-  DateTime birthday;
-  String gender;
+  String _name;
+  String _pfp; // aka profile picture
+  String _username; //TODO N make it final and initialize it
+  String _phone;
+  //DateTime _birthday;
+  String _gender;
+
+  void setName(String name){_name = name;}
+  String getName(){return _name;}
+
+  void setPfp(String pfp){_pfp = pfp;}
+  String getPfp(){return _pfp;}
+
+  void setUsername(String username){_username = username;}
+  String getUsername(){return _username;}
+
+  void setPhone(String phone){_phone = phone;}
+  String getPhone(){return _phone;}
+
+  void setGender(String gender){_gender = gender;}
+  String getGender(){return _gender;}
 }
 
 //to be used in ChatRoom

@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'loginScreen.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class Photographia extends StatefulWidget {
   @override
@@ -57,6 +58,7 @@ class _PhotographiaState extends State<Photographia> {
 //      firebaseStorageRef.putFile(file);
 //  }
   void saveImage() {}
+
   @override
   Widget build(BuildContext context) {
     int imageId;
@@ -95,15 +97,15 @@ class _PhotographiaState extends State<Photographia> {
                   padding: const EdgeInsets.all(8.0),
                   child: _imageFile == null
                       ? Image.asset(
-                    'assets/images/alt_img.png',
-                    width: 400.0,
-                    height: 300.0,
-                  )
+                          'assets/images/alt_img.png',
+                          width: 400.0,
+                          height: 300.0,
+                        )
                       : Image.file(
-                    _imageFile,
-                    height: 300.0,
-                    width: 400.0,
-                  ),
+                          _imageFile,
+                          height: 300.0,
+                          width: 400.0,
+                        ),
                 ),
                 //button to upload the user photo..
                 RaisedButton(
@@ -115,14 +117,18 @@ class _PhotographiaState extends State<Photographia> {
                   ),
                   onPressed: () async {
                     if (_imageFile != null) {
-                      ImageGetter.setImage(_imageFile);
                       // Navigator.popAndPushNamed(context,'/');
-//                          //TODO handle the repetition..
-//                          final StorageReference firebaseStorageRef =
-//                          FirebaseStorage.instance.ref().child('${widget.idIncremental.toString()}.jpg');
-//                          widget.idIncremental++;
-//                          final StorageUploadTask task =
-//                          firebaseStorageRef.putFile(_imageFile);
+                      //TODO handle the repetition..
+                      final StorageReference firebaseStorageRef =
+                          FirebaseStorage.instance
+                              .ref()
+                              .child('${widget.idIncremental.toString()}.jpg');
+                      widget.idIncremental++;
+                      final StorageUploadTask task =
+                          firebaseStorageRef.putFile(_imageFile);
+                      ImageGetter.setImage(_imageFile,
+                          'gs://kikchat-e9210.appspot.com/${widget.idIncremental.toString()}.jpg');
+                      widget.idIncremental++;
                     }
                   },
                 ),
@@ -153,10 +159,12 @@ class _PhotographiaState extends State<Photographia> {
 class ImageGetter {
   static File img = new File('..');
   static ImageStatus imageStatus = ImageStatus.notAdded;
+  static String imageStorageLocation;
 
-  static setImage(File myimg) {
-    img = myimg;
+  static setImage(File myImg, String storageLoc) {
+    img = myImg;
     imageStatus = ImageStatus.added;
+    imageStorageLocation = storageLoc;
   }
 
   static File getImage() {
@@ -165,5 +173,9 @@ class ImageGetter {
 
   static ImageStatus getImageStatus() {
     return imageStatus;
+  }
+
+  static String getImageStorageLocation(){
+    return imageStorageLocation;
   }
 }
