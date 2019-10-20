@@ -8,7 +8,7 @@ import 'screens/chatScreen.dart';
 import 'screens/friendsList.dart';
 import 'screens/loginScreen.dart';
 
-void main() => runApp(MyApp());
+void main() {runApp(MyApp());}
 
 class MyApp extends StatefulWidget {
   @override
