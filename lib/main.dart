@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
       ),
       darkTheme: ThemeData.dark(),
       title: 'KIK',
-      initialRoute: '/',
+      initialRoute: '/friends',
       routes: {
         '/': (context) => Welcome(),
         '//': (context) => RootPage(auth: new Auth()),
