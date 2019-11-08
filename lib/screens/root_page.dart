@@ -1,46 +1,47 @@
 import 'package:flutter/material.dart';
-import 'loginScreen.dart';
-import 'friendsList.dart';
 import 'package:kik_chat/auth.dart';
+
+import 'friendsList.dart';
+import 'loginScreen.dart';
+
 class RootPage extends StatefulWidget {
-  final BaseAuth auth;
+  final Auth auth;
   RootPage({this.auth});
   @override
   State<StatefulWidget> createState() => new RootPageState();
 }
 
-enum AuthStatus { notSignedIn, signedIn }
+enum AuthStatus { out, In }
 
 class RootPageState extends State<RootPage> {
-  AuthStatus _authStatus = AuthStatus.notSignedIn;
+  AuthStatus _authStatus = AuthStatus.out;
   initState() {
     super.initState();
-    widget.auth.currentUser().then((userId) {
+    Auth.getCurrentUser().then((userId) {
       setState(() {
-        _authStatus =
-        userId == null ? AuthStatus.notSignedIn : AuthStatus.signedIn;
+        _authStatus = userId == null ? AuthStatus.out : AuthStatus.In;
       });
     });
   }
 
   void signedIn() {
     setState(() {
-      _authStatus = AuthStatus.signedIn;
+      _authStatus = AuthStatus.In;
     });
   }
 
   void _signedout() {
     setState(() {
-      _authStatus = AuthStatus.notSignedIn;
+      _authStatus = AuthStatus.out;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     switch (_authStatus) {
-      case AuthStatus.notSignedIn:
-       return LoginScreen(auth: widget.auth, signedIn: signedIn);
-      case AuthStatus.signedIn:
+      case AuthStatus.out:
+        return LoginScreen(auth: widget.auth, signedIn: signedIn);
+      case AuthStatus.In:
         return FriendsList(
           auth: widget.auth,
           signedOut: _signedout,

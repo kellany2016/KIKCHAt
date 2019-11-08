@@ -5,10 +5,29 @@ class Welcome extends StatefulWidget {
   @override
   _WelcomeState createState() => _WelcomeState();
 }
-enum WelcomeStatus {welcomed, notWelcomed}
-class _WelcomeState extends State<Welcome> {
+
+enum WelcomeStatus { welcomed, notWelcomed }
+
+class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
   //TODO handle to go to the rootPage if the user already used the app..
   WelcomeStatus welcomeStatus = WelcomeStatus.notWelcomed;
+  AnimationController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      upperBound: 75,
+      lowerBound: 15,
+      duration: Duration(seconds: 1),
+      vsync: this,
+    );
+    controller.forward();
+
+    controller.addListener(() {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,12 +39,24 @@ class _WelcomeState extends State<Welcome> {
             Center(
               child: Column(
                 children: <Widget>[
-                  Text(
-                    '++KIK',
-                    style: TextStyle(
-                        fontFamily: 'LuckiestGuy',
-                        fontSize: 75,
-                        color: KmyColors[2]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        '++',
+                        style: TextStyle(
+                            fontFamily: 'LuckiestGuy',
+                            fontSize: controller.value,
+                            color: KmyColors[2]),
+                      ),
+                      Text(
+                        'KIK',
+                        style: TextStyle(
+                            fontFamily: 'LuckiestGuy',
+                            fontSize: 75,
+                            color: KmyColors[2]),
+                      ),
+                    ],
                   ),
                   Text(
                     'Chat with same friends',
@@ -46,7 +77,9 @@ class _WelcomeState extends State<Welcome> {
                 'Get started',
                 style: TextStyle(color: KmyColors[5]),
               ),
-              onPressed: () {Navigator.pushNamed(context,'/starting');},
+              onPressed: () {
+                Navigator.pushNamed(context, '/login');
+              },
             ),
           ],
         ),
@@ -58,7 +91,7 @@ class _WelcomeState extends State<Welcome> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Made with love in Egypt',
+              'Made with love in Alexandria',
               style: TextStyle(color: KmyColors[1]),
             ),
           ],

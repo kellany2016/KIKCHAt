@@ -1,13 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kik_chat/NoSql_Data/my_user data.dart';
 import 'package:kik_chat/auth.dart';
 import 'package:kik_chat/constants.dart';
-import 'package:kik_chat/screens/Photographia.dart';
-import 'package:kik_chat/screens/friendsList.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+import 'Photographia.dart';
 
 class LoginScreen extends StatefulWidget {
-  final BaseAuth auth;
+  final Auth auth;
   final VoidCallback signedIn;
 
   LoginScreen({this.auth, this.signedIn});
@@ -21,11 +23,19 @@ enum FormType { signIn, signUp }
 enum ImageStatus { added, notAdded }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool spin = false;
+  static Icon defaultIcon = Icon(
+    Icons.add_a_photo,
+    color: KmyColors[3],
+    size: 100,
+  );
+  Icon pfpIcon = defaultIcon;
+  File imageFile;
   String email, password;
   FormType _formType = FormType.signIn;
   final _formKey = GlobalKey<FormState>();
-  FriendInfo _friendInfo;
 
+  //what is this ???ظظظ
   bool validation() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -36,22 +46,35 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void validateAndSubmit() async {
+    setState(() {
+      spin = true;
+    });
     if (validation()) {
       try {
+        bool result;
         if (_formType == FormType.signIn) {
-          var user =
-              await widget.auth.signInWithEmailAndPassword(email, password);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => FriendsList()));
+          result = await Auth.signMeIn(email, password);
+          if (result) {
+            Navigator.pushNamed(context, '/friends');
+          } else
+            print('Can\'t log In');
         } else {
-          var user =
-              await widget.auth.createUserWithEmailAndPassword(email, password);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => FriendsList()));
+          result = await Auth.signMeUp(
+            email: email,
+            password: password,
+          );
+          if (result) {
+            Navigator.pushNamed(context, '/friends');
+          } else
+            print('Can\'t log In');
         }
+        setState(() {
+          spin = false;
+        });
+
         widget.signedIn();
       } catch (e) {
-        print(e);
+        print('logins says : $e');
       }
     }
   }
@@ -76,25 +99,28 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light(),
-      home: Scaffold(
-        body: SafeArea(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _formType == FormType.signIn
-                    ? loginFields()
-                    : Expanded(
-                        child: ListView(
-                          children: <Widget>[
-                            signUpFields(),
-                            formButtons(),
-                          ],
+      home: ModalProgressHUD(
+        inAsyncCall: spin,
+        child: Scaffold(
+          body: SafeArea(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  _formType == FormType.signIn
+                      ? loginFields()
+                      : Expanded(
+                          child: ListView(
+                            children: <Widget>[
+                              signUpFields(),
+                              formButtons(),
+                            ],
+                          ),
                         ),
-                      ),
-                // loginFields(),
-              ],
+                  // loginFields(),
+                ],
+              ),
             ),
           ),
         ),
@@ -127,51 +153,58 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  updatePFP() {
+    if (imageFile == null) {
+      pfpIcon = defaultIcon;
+      return null;
+    } else {
+      pfpIcon = null;
+      return FileImage(imageFile);
+    }
+  }
+
   Widget signUpFields() {
     return Column(
       children: <Widget>[
-        Icon(
-          Icons.account_circle,
-          size: 100,
-          color: KmyColors[3],
+        GestureDetector(
+          onTap: dialogeTrigger,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundImage: updatePFP(),
+              backgroundColor: Colors.white,
+              radius: 50,
+              child: pfpIcon,
+            ),
+          ),
         ),
-//        Column(
-//          children: <Widget>[
-//            FlatButton(
-//              child: add_photo(),
-//              onPressed: () => Navigator.push(context,
-//                  MaterialPageRoute(builder: (context) => Photographia())),
-//            ),
-//            Padding(
-//              padding: const EdgeInsets.all(8.0),
-//              child: Text('add your photo'),
-//            ),
-//          ],
-//        ),
         CustomeTextField(
           labelText: 'User Name',
           hintText: 'Must be unique',
+          keyboardType: TextInputType.text,
         ),
         CustomeTextField(
           onSaved: (value) {
             email = value;
+            print('emails is $email');
           },
           labelText: 'Email Address',
           hintText: 'Email',
         ),
         CustomeTextField(
-          onSaved: (value) => password = value,
+          onSaved: (value) {
+            password = value;
+            print('passwords is $password');
+          },
           hintText: 'Password',
           labelText: 'Password',
           obscure: true,
         ),
         CustomeTextField(
-          onSaved: (value) => password = value,
           hintText: 'Password',
           labelText: 'Confirm Password',
           obscure: true,
         ),
-
         CustomeTextField(
           keyboardType: TextInputType.phone,
           labelText: 'Phone Number',
@@ -179,22 +212,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ],
     );
-  }
-
-  Widget add_photo() {
-    if (ImageGetter.getImageStatus() == ImageStatus.notAdded) {
-      return Image.asset(
-        'assets/images/add_photo.png',
-        height: 50.0,
-        width: 50.0,
-      );
-    } else if (ImageGetter.getImageStatus() == ImageStatus.added) {
-      return Image.file(
-        ImageGetter.getImage(),
-        height: 200.0,
-        width: 200.0,
-      );
-    }
   }
 
   formButtons() {
@@ -234,49 +251,52 @@ class _LoginScreenState extends State<LoginScreen> {
       ],
     );
   }
-}
 
-//Todo needs a controller
-class CustomeTextField extends StatelessWidget {
-  final String labelText;
-  final String hintText;
-  final bool obscure;
-  final TextInputType keyboardType;
-  final Function onSaved;
-
-  CustomeTextField({
-    this.onSaved,
-    this.keyboardType,
-    this.labelText,
-    this.hintText,
-    this.obscure,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12, left: 5, right: 3),
-      child: TextFormField(
-        keyboardType: keyboardType ?? TextInputType.emailAddress,
-        //style: TextStyle(fontSize: 18),
-        obscureText: obscure ?? false,
-        onSaved: onSaved,
-        decoration: InputDecoration(
-          hintText: hintText,
-          labelText: labelText,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32),
-            borderSide: BorderSide(color: KmyColors[3], width: 2),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32),
-            borderSide: BorderSide(color: KmyColors[3], width: 1),
-          ),
-        ),
+  dialogeTrigger() {
+    var myDialog = SimpleDialog(
+      title: Text(
+        'Profile Picture',
+        style: TextStyle(color: KmyColors[0]),
       ),
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.camera,
+                color: KmyColors[2],
+              ),
+              iconSize: 35,
+              onPressed: () async {
+                deactivate();
+                File whatweget = await Photographia().getImageFromCam();
+                setState(() {
+                  imageFile = whatweget;
+                });
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.photo_library,
+                color: KmyColors[2],
+              ),
+              iconSize: 35,
+              onPressed: () async {
+                File myimageFile = await Photographia().getImageFromGallery();
+                setState(() {
+                  imageFile = myimageFile;
+                });
+              },
+            ),
+          ],
+        ),
+      ],
     );
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return myDialog;
+        });
   }
 }

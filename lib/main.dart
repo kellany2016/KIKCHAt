@@ -27,13 +27,13 @@ class _MyAppState extends State<MyApp> {
       ),
       darkTheme: ThemeData.dark(),
       title: 'KIK',
-      initialRoute: '/friends',
+      initialRoute: '/chat',
       routes: {
         '/': (context) => Welcome(),
         '//': (context) => RootPage(auth: new Auth()),
-        '/starting': (context) => LoginScreen(),
+        '/login': (context) => LoginScreen(),
         '/friends': (context) => FriendsList(),
-        '/chat': (context) => ChatScreen()
+        '/chat': (context) => ChatScreen(),
         //TODO use named routes in the rest of files..
       },
     );

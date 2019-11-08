@@ -1,26 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:kik_chat/constants.dart';
 
-final _auth = FirebaseAuth.instance;
+import '../auth.dart';
+
 FirebaseUser loggedInUser;
-final _firestore = Firestore.instance;
-var id_counter = 0;
 
 class ChatScreen extends StatefulWidget {
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
-
-List<Color> myColors = [
-  Color(0xFF012d4a),
-  Color(0xFF014753),
-  Color(0xFF016392),
-  Color(0xFF01839d),
-  Color(0xFFaacfe2),
-  Color(0xFFd7dcde),
-];
 
 class _ChatScreenState extends State<ChatScreen> {
   String msgSent = 'Hello Cutie! ';
@@ -31,137 +23,128 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
-  }
-
-  void getCurrentUser() async {
-    try {
-      final user = await _auth.currentUser();
-      if (user != null) {
-        loggedInUser = user;
-        print(loggedInUser.email);
-      }
-    } catch (e) {
-      print(e);
-    }
+    Auth.getCurrentUser();
+    FireStoring.myDocumentId();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Chatting(),
-      backgroundColor: myColors[5],
+      body: chatting(),
+      backgroundColor: KmyColors[5],
     );
   }
 
-  Chatting() =>
-      SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            MessageBubble(),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: myColors[1],
-                          width: 2.5,
-                        ),
+  chatting() {
+    TextEditingController myController = TextEditingController();
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          MessageStream(),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: TextField(
+                  controller: myController,
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: KmyColors[0],
+                        width: 2.5,
                       ),
                     ),
-                    onChanged: (value) {
-                      //TODO controller is better here
-                      setState(() {
-                        msgSent = value;
-                      });
-                    },
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    //TODO send msg
+                  onChanged: (value) {
+                    msgSent = value;
                   },
-                  color: myColors[0],
                 ),
-              ],
-            ),
-          ],
-        ),
-      );
-
-
-
+              ),
+              IconButton(
+                icon: Icon(Icons.send),
+                onPressed: () {
+                  FireStoring().send(msgSent);
+                  myController.clear();
+                },
+                color: KmyColors[1],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
+
 class MessageBubble extends StatelessWidget {
   MessageBubble({this.text, this.sender, this.isCurrentUser, this.id});
-
+  final MainAxisAlignment myAlignment = MainAxisAlignment.end;
+  final MainAxisAlignment hisAlignment = MainAxisAlignment.start;
   final id;
   final String text, sender;
   final bool isCurrentUser;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(7),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Text(text),
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.elliptical(20, 40)),
-        color: myColors[4],
-      ),
+    return Row(
+      mainAxisAlignment: isCurrentUser ? myAlignment : hisAlignment,
+      children: <Widget>[
+        Container(
+//          transform: Matrix4.rotationZ(isCurrentUser ? 0.1 : -0.1),
+          child: Text(
+            text,
+            style:
+                TextStyle(color: isCurrentUser ? KmyColors[0] : KmyColors[5]),
+          ),
+          margin: EdgeInsets.all(2),
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.elliptical(20, 40)),
+            color: isCurrentUser ? KmyColors[4] : KmyColors[2],
+          ),
+        ),
+      ],
     );
-
   }
 }
 
 class MessageStream extends StatelessWidget {
+  static int i = 0;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance
-            .collection('rasael')
-            .orderBy('id', descending: false)
-            .snapshots(),
+        stream: FireStoring().chatRoomStream(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
-              child: Text('nothing to show...'),
+              child: Text('send the first message...'),
             );
           }
           var messages = snapshot.data.documents.reversed;
 
           List<MessageBubble> messagesWidget = [];
           for (var message in messages) {
-            print("hi ${message.data['text']}");
             final messageText = message.data['text'];
             final messageSender = message.data['sender'];
-            var messageId = message.data['id'];
-            final currentUser = loggedInUser.email;
-            final bool ismCurrentUser = currentUser == messageSender;
+            var messageId = message.data['number'];
+            //  final currentUser = loggedInUser.email;
+            //final bool ismCurrentUser = currentUser == messageSender;
             final messageWidget = MessageBubble(
+              isCurrentUser: ++i % 3 == 0 ? false : true,
               text: messageText,
               sender: messageSender,
-              isCurrentUser: ismCurrentUser,
-              id: messageId,
             );
-            if (id_counter < messageId) id_counter = messageId;
+            if (FireStoring.lastId < messageId) FireStoring.lastId = messageId;
             messagesWidget.add(messageWidget);
           }
+
           return Expanded(
             child: ListView(
               reverse: true,
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+              // padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
               children: messagesWidget,
             ),
           );
         });
   }
 }
-
