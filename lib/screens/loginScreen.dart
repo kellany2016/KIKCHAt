@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
         bool result;
         if (_formType == FormType.signIn) {
           result = await Auth.signMeIn(email, password);
-          if (result) {
+          if (result != null) {
             Navigator.pushNamed(context, '/friends');
           } else
             print('Can\'t log In');

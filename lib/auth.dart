@@ -7,6 +7,7 @@ class Auth {
   static String _myEmail;
   static final _myAuth = FirebaseAuth.instance;
   static AuthResult result;
+  static FirebaseUser user;
 //TODO result is always NOT NULL which makes it useless [somehow] user result.user instead
 
   static signMeUp(
@@ -30,18 +31,18 @@ class Auth {
           email: email, password: password);
       return result != null;
     } catch (e, s) {
-      print(s);
+      print('auth says ::: $s');
       return false;
     }
   }
 
   static getCurrentUser() async {
     try {
-      final user = await _myAuth.currentUser();
+      user = await _myAuth.currentUser();
       if (user != null) {
         _myEmail = user.email;
 
-        return _myEmail;
+        return user;
       }
     } catch (e) {
       print(e);
@@ -49,7 +50,12 @@ class Auth {
     }
   }
 
-  getUserId(FirebaseUser user) async {
+  static myUserId() async {
+    if (user == null) await getCurrentUser();
+    return user.uid;
+  }
+
+  static getUserId(FirebaseUser user) async {
     return user.uid;
   }
 
@@ -62,12 +68,16 @@ class FireStoring {
   //region fields
   static int lastId = -1;
   static Firestore _myFireStore = Firestore.instance;
-  String _pathToMsgs = '/oneToOneChats/vjm1dLfdDrBLsWT0dVix/messages';
-  static String _myDocumentId = '';
+  static String _pathToMsgs = '/oneToOneChats/vjm1dLfdDrBLsWT0dVix/messages';
+  static String _myId = '';
+  String doc;
+//  FireStoring(this.doc) {}
 
 //endregion
 
 //region  Methods
+
+  pathTomsg() {}
 //shouldn't call send uless getCurrentUser is called in auth otherwise it will crash
   send(String mymsg) {
     ++lastId;
@@ -83,36 +93,32 @@ class FireStoring {
     }
   }
 
-  createPrivateChat(String hisDocumentId) async {
+  static createPrivateChat(String hisId) {
     //remove from here
-    await myDocumentId();
-    String doc = '$_myDocumentId + $hisDocumentId';
+
+    String doc = '$_myId + $hisId';
     _myFireStore
         .collection('OneToOneChats')
         .document(doc)
-        .setData({'user1': _myDocumentId, 'user2': ' test One'});
+        .setData({'user1': _myId, 'user2': hisId});
 
     //to be moved to send
-    _myFireStore
-        .collection('OneToOneChats/$doc/messages')
-        .add({'sender': Auth._myEmail, 'text': ' test One'});
-    print('Created');
+    _pathToMsgs = 'OneToOneChats/$doc/messages';
   }
 
-  addUser(String name, String userId) {}
-
-  static Future<String> myDocumentId() async {
-    final users = await _myFireStore.collection('AllUsers').getDocuments();
-    for (var doc in users.documents) {
-      if (doc.data['name'] == 'ahmed Alla') {
-        _myDocumentId = doc.documentID;
-        return _myDocumentId;
-      }
-    }
-    return null;
+  static Future<String> myId() async {
+    _myId = Auth.myUserId();
+//    final users = await _myFireStore.collection('AllUsers').getDocuments();
+//    for (var doc in users.documents) {
+//      if (doc.data['name'] == 'ahmed Alla') {
+//        _myDocumentId = doc.documentID;
+//        return _myDocumentId;
+//      }
+//    }
+//    return null;
   }
 
-  Stream chatRoomStream() {
+  static Stream chatRoomStream() {
     return _myFireStore.collection(_pathToMsgs).orderBy('number').snapshots();
   }
 

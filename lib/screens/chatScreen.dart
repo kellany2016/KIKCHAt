@@ -3,30 +3,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:kik_chat/constants.dart';
 
 import '../auth.dart';
 
 FirebaseUser loggedInUser;
 
-class ChatScreen extends StatefulWidget {
-  @override
-  _ChatScreenState createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
+class ChatScreen extends StatelessWidget {
   String msgSent = 'Hello Cutie! ';
-
+  FlutterSound flutterSound = FlutterSound();
   String textFieldValue;
   TextEditingController controlText = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    Auth.getCurrentUser();
-    FireStoring.myDocumentId();
-  }
-
+  bool isRecording = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +56,24 @@ class _ChatScreenState extends State<ChatScreen> {
                   myController.clear();
                 },
                 color: KmyColors[1],
+              ),
+              InkWell(
+                onTap: () async {
+                  if (!isRecording) {
+                    isRecording = true;
+                    print('is recording');
+                    String path = await flutterSound.startRecorder(null);
+                    print("PAths is $path");
+                  } else {
+                    isRecording = false;
+                    String result = await flutterSound.stopRecorder();
+                    print('stopped Recoding and result is $result');
+                  }
+                },
+                child: Icon(
+                  Icons.mic,
+                  color: KmyColors[1],
+                ),
               ),
             ],
           ),
@@ -113,7 +120,7 @@ class MessageStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: FireStoring().chatRoomStream(),
+        stream: FireStoring.chatRoomStream(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(

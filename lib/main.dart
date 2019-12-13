@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kik_chat/constants.dart';
+import 'package:kik_chat/screens/profile.dart';
 import 'package:kik_chat/screens/root_page.dart';
 import 'package:kik_chat/screens/welcome_screen.dart';
 
@@ -27,13 +28,14 @@ class _MyAppState extends State<MyApp> {
       ),
       darkTheme: ThemeData.dark(),
       title: 'KIK',
-      initialRoute: '/chat',
+      initialRoute: '/',
       routes: {
         '/': (context) => Welcome(),
         '//': (context) => RootPage(auth: new Auth()),
         '/login': (context) => LoginScreen(),
         '/friends': (context) => FriendsList(),
         '/chat': (context) => ChatScreen(),
+        '/profile': (context) => Profile(),
         //TODO use named routes in the rest of files..
       },
     );
