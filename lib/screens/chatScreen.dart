@@ -11,6 +11,8 @@ import '../auth.dart';
 FirebaseUser loggedInUser;
 
 class ChatScreen extends StatelessWidget {
+  String RoomName;
+  ChatScreen(this.RoomName);
   String msgSent = 'Hello Cutie! ';
   FlutterSound flutterSound = FlutterSound();
   String textFieldValue;
@@ -30,7 +32,7 @@ class ChatScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          MessageStream(),
+          MessageStream(RoomName),
           Row(
             children: <Widget>[
               Expanded(
@@ -117,10 +119,13 @@ class MessageBubble extends StatelessWidget {
 
 class MessageStream extends StatelessWidget {
   static int i = 0;
+
+  String Room;
+  MessageStream(this.Room);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: FireStoring.chatRoomStream(),
+        stream: FireStoring.chatRoomStream(Room),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -131,13 +136,13 @@ class MessageStream extends StatelessWidget {
 
           List<MessageBubble> messagesWidget = [];
           for (var message in messages) {
-            final messageText = message.data['text'];
+            String messageText = message.data['text'];
             final messageSender = message.data['sender'];
             var messageId = message.data['number'];
             //  final currentUser = loggedInUser.email;
             //final bool ismCurrentUser = currentUser == messageSender;
             final messageWidget = MessageBubble(
-              isCurrentUser: ++i % 3 == 0 ? false : true,
+              isCurrentUser: messageSender == Auth.myUserId(),
               text: messageText,
               sender: messageSender,
             );

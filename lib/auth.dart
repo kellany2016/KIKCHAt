@@ -83,7 +83,7 @@ class FireStoring {
     ++lastId;
     _myFireStore
         .collection(_pathToMsgs)
-        .add({'number': lastId, 'sender': Auth._myEmail, 'text': mymsg});
+        .add({'number': lastId, 'sender': Auth.myUserId(), 'text': mymsg});
   }
 
   subscribe() async {
@@ -118,8 +118,8 @@ class FireStoring {
 //    return null;
   }
 
-  static Stream chatRoomStream() {
-    return _myFireStore.collection(_pathToMsgs).orderBy('number').snapshots();
+  static Stream chatRoomStream(String room) {
+    return _myFireStore.collection(room).orderBy('number').snapshots();
   }
 
   //endregion

@@ -52,7 +52,7 @@ class _FriendsListState extends State<FriendsList> {
               child: ListView(
                 children: <Widget>[
                   friendBubble(
-                    name: 'Eslam Sannoofaa',
+                    name: 'Hello World!',
                     lastMsg: 'ممكن نتعرف ؟',
                     lastTime: 12.12,
                     pfp: AssetImage(

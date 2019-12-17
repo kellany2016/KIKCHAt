@@ -34,9 +34,8 @@ class _MyAppState extends State<MyApp> {
         '//': (context) => RootPage(auth: new Auth()),
         '/login': (context) => LoginScreen(),
         '/friends': (context) => FriendsList(),
-        '/chat': (context) => ChatScreen(),
+        '/chat': (context) => ChatScreen('HelloWorld1'),
         '/profile': (context) => Profile(),
-        //TODO use named routes in the rest of files..
       },
     );
   }
